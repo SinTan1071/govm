@@ -41,6 +41,11 @@ installGoEnv() {
         echo "you already have the go$VAR installed"
         return 0
     fi
+    HTTPCODE=$(curl -i -m 10 -o /dev/null -s -w %{http_code} https://dl.google.com/go/go$VAR.linux-amd64.tar.gz)
+    if [ $HTTPCODE -ne 200 ];then
+        echo "no go$VAR is available"
+        return 0
+    fi
     echo "installing go$VAR...   "
     {
         wget --quiet --no-check-certificate https://dl.google.com/go/go$VAR.linux-amd64.tar.gz && \
@@ -86,4 +91,3 @@ case "$1" in
         exit 1
         ;;
 esac
-
