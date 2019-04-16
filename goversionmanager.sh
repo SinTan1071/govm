@@ -50,19 +50,22 @@ installGoEnv() {
     } &
     POINTS='                                                  '
     PROCESS=$((1))
+    SLEEPTIME=3
     while [ true ]; do
         echo -ne "\033[42;1m${POINTS:0:$(( $PROCESS/2 ))}\033[0m${POINTS:$(( $PROCESS/2 ))}$PROCESS%\r"
         if [ $PROCESS -eq  $((100)) ];then
+            echo ''
             break
         fi
         if [ -d $ROOTDIR/go$VAR ] && [ -f $BINDIR/go$VAR ];then
             rm go$VAR.linux-amd64.tar.gz
-            PROCESS=$((100))
+            PROCESS=$(( $PROCESS + 1 ))
+            SLEEPTIME=0.05
         fi
         if [ ! -d $ROOTDIR/go$VAR ] && [ $PROCESS -lt 73 ];then
             PROCESS=$(( $PROCESS + 1 ))
         fi
-        sleep 3
+        sleep $SLEEPTIME
     done
     return 0
 }
