@@ -15,3 +15,10 @@ or Wget:
 ```ssh
 wget -qO- https://raw.githubusercontent.com/sintan1071/govm/master/.install.sh | bash
 ```
+
+After installation, you should reopen your terminal window or you can just run such a command:
+
+```ssh
+find ~ -maxdepth 1 -name .\*rc   # this command will show you the "your-sh-rc", then you can run the following command
+source your-sh-rc
+```

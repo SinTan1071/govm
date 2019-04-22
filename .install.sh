@@ -12,8 +12,7 @@ main() {
     env git clone --depth=1 https://github.com/sintan1071/govm.git "$USERPATH/.govm" || {
         echo "Error: git clone of govm repo failed"
         exit 1
-    }
-    string=$SHELL  
+    } 
     array=(${SHELL//"/"/ }) 
     i=$((0)) 
     for var in ${array[@]}
