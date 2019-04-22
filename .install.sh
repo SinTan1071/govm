@@ -23,8 +23,8 @@ main() {
     echo "##############################" >> $USERPATH/."$SHCMD"rc
     echo "##    Go Version Manager    ##" >> $USERPATH/."$SHCMD"rc
     echo "##############################" >> $USERPATH/."$SHCMD"rc
-    echo "alias govm='bash $USERPATH/.govm/goversionmanager.sh'"
-    source $USERPATH/."$SHCMD"rc
+    echo "alias govm='bash $USERPATH/.govm/goversionmanager.sh'" >> $USERPATH/."$SHCMD"rc
+    # source $USERPATH/."$SHCMD"rc
 }
 
 main
