@@ -1,6 +1,9 @@
 main() {
     USERPATH=~
     SHCMD=
+    if [ -d $USERPATH/.govm ];then
+        rm -fr $USERPATH/.govm
+    fi
     echo "Installing Go Version Manager..." 
     command -v git >/dev/null 2>&1 || {
         echo "Error: git is not installed"
