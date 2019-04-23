@@ -13,16 +13,30 @@ main() {
         echo "Error: git clone of govm repo failed"
         exit 1
     } 
-    array=(${SHELL//"/"/ }) 
-    i=$((0)) 
-    for var in ${array[@]}
+    
+    # array=(${SHELL//"/"/ }) 
+    # i=$((0)) 
+    # for var in ${array[@]}
+    # do
+    #     i=$(($i+1))
+    #     if [ $var = bin ];then
+    #         SHCMD=${array[$i]}
+    #     fi
+    # done 
+    
+    OLD_IFS="$IFS" 
+    IFS="/" 
+    array=($SHELL) 
+    IFS="$OLD_IFS"
+    i=$((1)) 
+    for var in ${array[@]} 
     do
         i=$(($i+1))
         if [ $var = bin ];then
             SHCMD=${array[$i]}
-        fi
-    done 
-    echo "show sh command $SHCMD"
+        fi 
+    done
+
     if [ ! $(cat $USERPATH/."$SHCMD"rc | grep "alias govm" | awk '{print $3}') ];then
         echo "##############################" >> $USERPATH/."$SHCMD"rc
         echo "##    Go Version Manager    ##" >> $USERPATH/."$SHCMD"rc

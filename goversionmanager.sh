@@ -30,8 +30,13 @@ DOWNLOADURL="https://dl.google.com/go/go$VAR.$OS-$ARCH.tar.gz"
 
 useGoEnv() {
     SHCMD=
-    array=(${SHELL//"/"/ }) 
-    i=$((0)) 
+    # array=(${SHELL//"/"/ }) 
+    # i=$((0)) 
+    OLD_IFS="$IFS" 
+    IFS="/" 
+    array=($SHELL) 
+    IFS="$OLD_IFS"
+    i=$((1))
     for var in ${array[@]}
     do
         i=$(($i+1))
@@ -64,13 +69,16 @@ listGoEnv() {
     NOWUSING=$(go version | awk '{print $3}')
     for v in `ls $BINDIR | grep go`
     do
-        if [ $v != "go" ];then
-            if [ $v = $NOWUSING ];then
-                echo -e "\033[33m$v\033[0m    <--- Using Now"
-            else
-                echo $v
-            fi
-        fi
+        for vv in `ls $ROOTDIR | grep go`
+        do
+            if [ $vv != "go" ] && [ $v = $vv ];then
+                if [ $v = $NOWUSING ];then
+                    echo -e "\033[33m$v\033[0m    <--- Using Now"
+                else
+                    echo $v
+                fi
+            fi    
+        done
     done
     return 0
 }
