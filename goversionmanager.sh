@@ -24,10 +24,39 @@ esac
 VAR=$2
 ROOTDIR="/usr/local"
 BINDIR="/usr/local/bin"
-TMPDIR=~/.govm/.tmp
+USERPATH=~
+TMPDIR=$USERPATH/.govm/.tmp
 DOWNLOADURL="https://dl.google.com/go/go$VAR.$OS-$ARCH.tar.gz"
 
 useGoEnv() {
+    SHCMD=
+    array=(${SHELL//"/"/ }) 
+    i=$((0)) 
+    for var in ${array[@]}
+    do
+        i=$(($i+1))
+        if [ $var = bin ];then
+            SHCMD=${array[$i]}
+        fi
+    done
+    NOWUSING=$(go version | awk '{print $3}')
+    if [ ! $VAR ]; then
+        echo "you should input the golang version you want to use"
+        return 0
+    fi
+    if [ -f $ROOTDIR/go$VAR/bin/go ] && [ -f $BINDIR/go$VAR ]; then
+        if [ -f $BINDIR/go ];then
+            rm $BINDIR/go
+        fi
+        export GOROOT=$ROOTDIR/go$VAR
+        sed "s/$NOWUSING/go$VAR/" $USERPATH/."$SHCMD"rc >> $USERPATH/."$SHCMD"rc.tmp
+        cat $USERPATH/."$SHCMD"rc.tmp > $USERPATH/."$SHCMD"rc
+        rm $USERPATH/."$SHCMD"rc.tmp
+        ln -s $BINDIR/go$VAR $BINDIR/go
+        echo "using go$VAR now"
+    else
+        echo "no local go$VAR was found, you should install the golang version $VAR first"
+    fi
     return 0
 }
 
@@ -47,7 +76,7 @@ listGoEnv() {
 }
 
 installGoEnv() {
-    if [ ! -n $VAR ]; then
+    if [ ! $VAR ]; then
         echo "you should input the golang version you want to install"
         return 0
     fi
@@ -79,7 +108,7 @@ installGoEnv() {
         fi
     fi
     echo "installing go$VAR...   "
-    echo "work dir $TMPDIR"
+    # echo "work dir $TMPDIR"
     {
         wget --quiet --no-check-certificate -P $TMPDIR $DOWNLOADURL && \
         tar -C $ROOTDIR -xzf $TMPDIR/go$VAR.$OS-$ARCH.tar.gz && \
