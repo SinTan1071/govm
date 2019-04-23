@@ -27,3 +27,29 @@ this command will show you the "your-sh-rc", then you can run the following comm
 ```ssh
 source your-sh-rc
 ```
+
+## Usage
+
+### install
+
+```ssh
+govm install 1.12.4
+```
+
+this command will install golang version 1.12.4
+
+### list
+
+```ssh
+govm list
+```
+
+this command will show you the golang version you already installed
+
+### use
+
+```ssh
+govm use 1.11.5
+```
+
+this commad will change the $GOROOT and your golang version to the version you inputed
