@@ -22,6 +22,7 @@ main() {
             SHCMD=${array[$i]}
         fi
     done 
+    echo "show sh command $SHCMD"
     if [ ! $(cat $USERPATH/."$SHCMD"rc | grep "alias govm" | awk '{print $3}') ];then
         echo "##############################" >> $USERPATH/."$SHCMD"rc
         echo "##    Go Version Manager    ##" >> $USERPATH/."$SHCMD"rc
