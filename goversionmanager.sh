@@ -29,21 +29,7 @@ TMPDIR=$USERPATH/.govm/.tmp
 DOWNLOADURL="https://dl.google.com/go/go$VAR.$OS-$ARCH.tar.gz"
 
 useGoEnv() {
-    SHCMD=
-    # array=(${SHELL//"/"/ }) 
-    # i=$((0)) 
-    OLD_IFS="$IFS" 
-    IFS="/" 
-    array=($SHELL) 
-    IFS="$OLD_IFS"
-    i=$((1))
-    for var in ${array[@]}
-    do
-        i=$(($i+1))
-        if [ $var = bin ];then
-            SHCMD=${array[$i]}
-        fi
-    done
+    SHCMD=$(bash ./.splitarray.sh $SHELL)
     NOWUSING=$(go version | awk '{print $3}')
     if [ ! $VAR ]; then
         echo "you should input the golang version you want to use"
@@ -98,7 +84,7 @@ installGoEnv() {
         SYSUSINGVERSION=$($ROOTDIR/go/bin/go version | awk '{print $3}')
         if [ $SYSUSINGVERSION = go$VAR ];then
             mv $ROOTDIR/go $ROOTDIR/go$VAR
-            export GOROOT=$ROOTDIR/go$VAR
+            # export GOROOT=$ROOTDIR/go$VAR
             ln -s $ROOTDIR/go$VAR/bin/go $BINDIR/go$VAR
             echo "go$VAR install successfull"
             return 0
@@ -135,6 +121,7 @@ installGoEnv() {
         mv $ROOTDIR/go $ROOTDIR/go$VAR && \
         ln -s $ROOTDIR/go$VAR/bin/go $BINDIR/go$VAR
     } &
+    sleep 2
     BARS='                                                  '
     PROCESS=$((1))
     SLEEPTIME=3
