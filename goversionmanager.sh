@@ -40,10 +40,12 @@ useGoEnv() {
             rm $BINDIR/go
         fi
         export GOROOT=$ROOTDIR/go$VAR
-        sed "s/$NOWUSING/go$VAR/" $USERPATH/."$SHCMD"rc >> $USERPATH/."$SHCMD"rc.tmp
-        cat $USERPATH/."$SHCMD"rc.tmp > $USERPATH/."$SHCMD"rc
-        rm $USERPATH/."$SHCMD"rc.tmp
         ln -s $BINDIR/go$VAR $BINDIR/go
+        OLDGOROOT=$(cat $USERPATH/."$SHCMD"rc | grep GOROOT)
+        NEWGOROOT="export GOROOT=$ROOTDIR/go$VAR"
+        sed "s|$OLDGOROOT|$NEWGOROOT|" $USERPATH/."$SHCMD"rc >> $USERPATH/."$SHCMD"rc.tmp
+        cp $USERPATH/."$SHCMD"rc.tmp $USERPATH/."$SHCMD"rc
+        rm $USERPATH/."$SHCMD"rc.tmp
         echo "using go$VAR now"
     else
         echo "no local go$VAR was found, you should install the golang version $VAR first"
@@ -146,6 +148,34 @@ installGoEnv() {
     done
     return 0
 }
+
+check() {
+    if [ -f $ROOTDIR/go/bin/go ];then
+        if [ $GOROOT = $ROOTDIR/go ];then
+            SYSUSINGVERSION=$($ROOTDIR/go/bin/go version | awk '{print $3}')
+            if [ -f $BINDIR/go ];then
+                rm $BINDIR/go
+            fi
+            if [ -f $BINDIR/$SYSUSINGVERSION ];then
+                rm $BINDIR/$SYSUSINGVERSION
+            fi
+            if [ $GOROOT = $ROOTDIR/go ];then
+                SHCMD=$(bash ./.splitarray.sh $SHELL)
+                OLDGOROOT=$(cat $USERPATH/."$SHCMD"rc | grep GOROOT)
+                NEWGOROOT="export GOROOT=$ROOTDIR/$SYSUSINGVERSION"
+                sed "s/$OLDGOROOT/$NEWGOROOT/" $USERPATH/."$SHCMD"rc >> $USERPATH/."$SHCMD"rc.tmp
+                cp $USERPATH/."$SHCMD"rc.tmp $USERPATH/."$SHCMD"rc
+                rm $USERPATH/."$SHCMD"rc.tmp
+            fi
+            mv $ROOTDIR/go $ROOTDIR/$SYSUSINGVERSION
+            export GOROOT=$ROOTDIR/$SYSUSINGVERSION
+            ln -s $ROOTDIR/$SYSUSINGVERSION/bin/go $BINDIR/$SYSUSINGVERSION
+            echo "govm check successfull"
+        fi
+    fi
+}
+
+check
 
 case "$1" in
     use)
