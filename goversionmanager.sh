@@ -80,6 +80,7 @@ installGoEnv() {
         fi
     fi
     echo "installing go$VAR...   "
+    echo "work dir $TMPDIR"
     {
         wget --quiet --no-check-certificate -P $TMPDIR $DOWNLOADURL && \
         tar -C $ROOTDIR -xzf $TMPDIR/go$VAR.$OS-$ARCH.tar.gz && \
@@ -92,11 +93,14 @@ installGoEnv() {
     while [ true ]; do
         echo -ne "\033[42;1m${BARS:0:$(( $PROCESS/2 ))}\033[0m${BARS:$(( $PROCESS/2 ))}$PROCESS%\r"
         if [ $PROCESS -eq  $((100)) ];then
+            echo ''
             echo "go$VAR install successfull"
             break
         fi
         if [ -d $ROOTDIR/go$VAR ] && [ -f $BINDIR/go$VAR ];then
-            rm $TMPDIR/go$VAR.$OS-$ARCH.tar.gz
+            if [ -f $TMPDIR/go$VAR.$OS-$ARCH.tar.gz ];then
+                rm $TMPDIR/go$VAR.$OS-$ARCH.tar.gz
+            fi
             PROCESS=$(( $PROCESS + 1 ))
             SLEEPTIME=0.05
         fi
