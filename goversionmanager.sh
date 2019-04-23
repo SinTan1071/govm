@@ -98,6 +98,7 @@ installGoEnv() {
         SYSUSINGVERSION=$($ROOTDIR/go/bin/go version | awk '{print $3}')
         if [ $SYSUSINGVERSION = go$VAR ];then
             mv $ROOTDIR/go $ROOTDIR/go$VAR
+            export GOROOT=$ROOTDIR/go$VAR
             ln -s $ROOTDIR/go$VAR/bin/go $BINDIR/go$VAR
             echo "go$VAR install successfull"
             return 0
