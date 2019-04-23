@@ -160,6 +160,9 @@ check() {
             if [ -f $BINDIR/$SYSUSINGVERSION ];then
                 rm $BINDIR/$SYSUSINGVERSION
             fi
+            mv $ROOTDIR/go $ROOTDIR/$SYSUSINGVERSION
+            export GOROOT=$ROOTDIR/$SYSUSINGVERSION
+            ln -s $ROOTDIR/$SYSUSINGVERSION/bin/go $BINDIR/$SYSUSINGVERSION
             
             SHCMD=$(bash ./.splitarray.sh $SHELL)
             OLDGOROOT=$(cat $USERPATH/."$SHCMD"rc | grep GOROOT)
@@ -168,9 +171,6 @@ check() {
             cp $USERPATH/."$SHCMD"rc.tmp $USERPATH/."$SHCMD"rc
             rm $USERPATH/."$SHCMD"rc.tmp
             
-            mv $ROOTDIR/go $ROOTDIR/$SYSUSINGVERSION
-            export GOROOT=$ROOTDIR/$SYSUSINGVERSION
-            ln -s $ROOTDIR/$SYSUSINGVERSION/bin/go $BINDIR/$SYSUSINGVERSION
             echo "govm check system golang version successfull"
         fi
     fi
