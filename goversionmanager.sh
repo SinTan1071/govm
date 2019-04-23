@@ -29,7 +29,7 @@ TMPDIR=$USERPATH/.govm/.tmp
 DOWNLOADURL="https://dl.google.com/go/go$VAR.$OS-$ARCH.tar.gz"
 
 useGoEnv() {
-    SHCMD=$(bash ./.splitarray.sh $SHELL)
+    SHCMD=$(bash $USERPATH/.govm/.splitarray.sh $SHELL)
     NOWUSING=$(go version | awk '{print $3}')
     if [ ! $VAR ]; then
         echo "you should input the golang version you want to use"
@@ -164,7 +164,7 @@ check() {
             export GOROOT=$ROOTDIR/$SYSUSINGVERSION
             ln -s $ROOTDIR/$SYSUSINGVERSION/bin/go $BINDIR/$SYSUSINGVERSION
             
-            SHCMD=$(bash ./.splitarray.sh $SHELL)
+            SHCMD=$(bash $USERPATH/.govm/.splitarray.sh $SHELL)
             OLDGOROOT=$(cat $USERPATH/."$SHCMD"rc | grep GOROOT)
             NEWGOROOT="export GOROOT='$ROOTDIR/$SYSUSINGVERSION'"
             sed "s|$OLDGOROOT|$NEWGOROOT|" $USERPATH/."$SHCMD"rc >> $USERPATH/."$SHCMD"rc.tmp
