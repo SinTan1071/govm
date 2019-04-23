@@ -66,7 +66,9 @@ useGoEnv() {
 }
 
 listGoEnv() {
-    NOWUSING=$(go version | awk '{print $3}')
+    if [ $GOROOT != $ROOTDIR/go ] && [ ! -f $ROOTDIR/go/bin/go ];then
+        NOWUSING=$(go version | awk '{print $3}')
+    fi
     for v in `ls $BINDIR | grep go`
     do
         for vv in `ls $ROOTDIR | grep go`
@@ -91,6 +93,15 @@ installGoEnv() {
     if [ -f $ROOTDIR/go$VAR/bin/go ] && [ -f $BINDIR/go$VAR ]; then
         echo "you already have the go$VAR installed"
         return 0
+    fi
+    if [ -f $ROOTDIR/go/bin/go ];then
+        SYSUSINGVERSION=$($ROOTDIR/go/bin/go version | awk '{print $3}')
+        if [ $SYSUSINGVERSION = go$VAR ];then
+            mv $ROOTDIR/go $ROOTDIR/go$VAR
+            ln -s $ROOTDIR/go$VAR/bin/go $BINDIR/go$VAR
+            echo "go$VAR install successfull"
+            return 0
+        fi
     fi
     if [ -f $ROOTDIR/go$VAR/bin/go ];then
         ln -s $ROOTDIR/go$VAR/bin/go $BINDIR/go$VAR
