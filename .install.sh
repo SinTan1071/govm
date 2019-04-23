@@ -43,6 +43,7 @@ main() {
         echo "##############################" >> $USERPATH/."$SHCMD"rc
         echo "alias govm='source $USERPATH/.govm/goversionmanager.sh'" >> $USERPATH/."$SHCMD"rc
     fi
+    alias govm='source $USERPATH/.govm/goversionmanager.sh'
     # source $USERPATH/."$SHCMD"rc
 }
 

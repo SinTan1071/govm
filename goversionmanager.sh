@@ -42,7 +42,7 @@ useGoEnv() {
         export GOROOT=$ROOTDIR/go$VAR
         ln -s $BINDIR/go$VAR $BINDIR/go
         OLDGOROOT=$(cat $USERPATH/."$SHCMD"rc | grep GOROOT)
-        NEWGOROOT="export GOROOT=$ROOTDIR/go$VAR"
+        NEWGOROOT="export GOROOT='$ROOTDIR/go$VAR'"
         sed "s|$OLDGOROOT|$NEWGOROOT|" $USERPATH/."$SHCMD"rc >> $USERPATH/."$SHCMD"rc.tmp
         cp $USERPATH/."$SHCMD"rc.tmp $USERPATH/."$SHCMD"rc
         rm $USERPATH/."$SHCMD"rc.tmp
@@ -146,6 +146,7 @@ installGoEnv() {
         fi
         sleep $SLEEPTIME
     done
+    rm wget-log
     return 0
 }
 
@@ -162,17 +163,17 @@ check() {
             if [ $GOROOT = $ROOTDIR/go ];then
                 SHCMD=$(bash ./.splitarray.sh $SHELL)
                 OLDGOROOT=$(cat $USERPATH/."$SHCMD"rc | grep GOROOT)
-                NEWGOROOT="export GOROOT=$ROOTDIR/$SYSUSINGVERSION"
-                sed "s/$OLDGOROOT/$NEWGOROOT/" $USERPATH/."$SHCMD"rc >> $USERPATH/."$SHCMD"rc.tmp
+                NEWGOROOT="export GOROOT='$ROOTDIR/$SYSUSINGVERSION'"
+                sed "s|$OLDGOROOT|$NEWGOROOT|" $USERPATH/."$SHCMD"rc >> $USERPATH/."$SHCMD"rc.tmp
                 cp $USERPATH/."$SHCMD"rc.tmp $USERPATH/."$SHCMD"rc
                 rm $USERPATH/."$SHCMD"rc.tmp
             fi
             mv $ROOTDIR/go $ROOTDIR/$SYSUSINGVERSION
             export GOROOT=$ROOTDIR/$SYSUSINGVERSION
             ln -s $ROOTDIR/$SYSUSINGVERSION/bin/go $BINDIR/$SYSUSINGVERSION
-            echo "govm check successfull"
         fi
     fi
+    echo "govm check successfull"
 }
 
 check
