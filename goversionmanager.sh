@@ -22,10 +22,9 @@ case "$OS" in
 esac
 
 VAR=$2
-WORKDIR=$(pwd)
 ROOTDIR="/usr/local"
 BINDIR="/usr/local/bin"
-TMPDIR=$WORKDIR/.tmp
+TMPDIR=~/.govm/.tmp
 DOWNLOADURL="https://dl.google.com/go/go$VAR.$OS-$ARCH.tar.gz"
 
 useGoEnv() {
