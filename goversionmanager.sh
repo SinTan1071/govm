@@ -151,15 +151,26 @@ installGoEnv() {
 }
 
 check() {
-    if [ -f $ROOTDIR/go/bin/go ];then
-        if [ $GOROOT = $ROOTDIR/go ];then
-            SYSUSINGVERSION=$($ROOTDIR/go/bin/go version | awk '{print $3}')
+    if [ -f $GOROOT/bin/go ];then
+        SYSUSINGVERSION=$($GOROOT/bin/go version | awk '{print $3}')
+        WHICHGO=$(which go)
+        if [ $WHICHGO != $BINDIR/go ];then
+            rm $WHICHGO
+        fi 
+        if [ $GOROOT != $ROOTDIR/$SYSUSINGVERSION ];then
             if [ -f $BINDIR/go ];then
                 rm $BINDIR/go
             fi
             if [ -f $BINDIR/$SYSUSINGVERSION ];then
                 rm $BINDIR/$SYSUSINGVERSION
             fi
+            if [ $GOROOT != $ROOTDIR/go ] || [ $GOROOT != $ROOTDIR/go/ ];then
+                if [ -d $ROOTDIR/go ];then
+                    rm -fr $ROOTDIR/go
+                fi
+                mv $GOROOT $ROOTDIR/go
+            fi
+            
             mv $ROOTDIR/go $ROOTDIR/$SYSUSINGVERSION
             export GOROOT=$ROOTDIR/$SYSUSINGVERSION
             ln -s $ROOTDIR/$SYSUSINGVERSION/bin/go $BINDIR/$SYSUSINGVERSION
