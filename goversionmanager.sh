@@ -41,7 +41,7 @@ useGoEnv() {
             rm $BINDIR/go
         fi
         export GOROOT=$ROOTDIR/go$VAR
-        ln -s $BINDIR/go$VAR $BINDIR/go
+        sudo ln -s $BINDIR/go$VAR $BINDIR/go
         OLDGOROOT=$(cat $USERPATH/."$SHCMD"rc | grep GOROOT)
         NEWGOROOT="export GOROOT='$ROOTDIR/go$VAR'"
         if [ $OLDGOROOT ];then
@@ -59,7 +59,7 @@ useGoEnv() {
 }
 
 listGoEnv() {
-    if [ $GOROOT != $SYSROOTDIR/go ] && [ ! -f $SYSROOTDIR/go/bin/go ];then
+    if [ "$GOROOT" != $SYSROOTDIR/go ] && [ ! -f $SYSROOTDIR/go/bin/go ];then
         NOWUSING=$(go version | awk '{print $3}')
     fi
     for v in `ls $BINDIR | grep go`
@@ -90,15 +90,15 @@ installGoEnv() {
     if [ -f $SYSROOTDIR/go/bin/go ];then
         SYSUSINGVERSION=$($SYSROOTDIR/go/bin/go version | awk '{print $3}')
         if [ $SYSUSINGVERSION = go$VAR ];then
-            mv $SYSROOTDIR/go $ROOTDIR/go$VAR
+            sudo mv $SYSROOTDIR/go $ROOTDIR/go$VAR
             # export GOROOT=$ROOTDIR/go$VAR
-            ln -s $ROOTDIR/go$VAR/bin/go $BINDIR/go$VAR
+            sudo ln -s $ROOTDIR/go$VAR/bin/go $BINDIR/go$VAR
             echo "go$VAR install successfull"
             return 0
         fi
     fi
     if [ -f $ROOTDIR/go$VAR/bin/go ];then
-        ln -s $ROOTDIR/go$VAR/bin/go $BINDIR/go$VAR
+        sudo ln -s $ROOTDIR/go$VAR/bin/go $BINDIR/go$VAR
         echo "go$VAR install successfull"
         return 0
     fi
@@ -111,22 +111,21 @@ installGoEnv() {
         SERVERLEN=$(curl -sI $DOWNLOADURL | grep content-length | awk '{print $2}')
         LOCALLEN=$(ls -l $TMPDIR/go$VAR.$OS-$ARCH.tar.gz | awk '{print $5}')
         if [ ${SERVERLEN:0:$((${#SERVERLEN}-1))} = $LOCALLEN ];then
-            tar -C $ROOTDIR -xzf $TMPDIR/go$VAR.$OS-$ARCH.tar.gz && \
-            mv $SYSROOTDIR/go $ROOTDIR/go$VAR && \
-            ln -s $ROOTDIR/go$VAR/bin/go $BINDIR/go$VAR
+            sudo tar -C $ROOTDIR -xzf $TMPDIR/go$VAR.$OS-$ARCH.tar.gz && \
+            sudo mv $SYSROOTDIR/go $ROOTDIR/go$VAR && \
+            sudo ln -s $ROOTDIR/go$VAR/bin/go $BINDIR/go$VAR
             echo "go$VAR install successfull"
             return 0
-        else
-            rm $TMPDIR/go$VAR.$OS-$ARCH.tar.gz
         fi
+        rm $TMPDIR/go$VAR.$OS-$ARCH.tar.gz
     fi
     echo "installing go$VAR...   "
     # echo "work dir $TMPDIR"
     {
         wget --quiet --no-check-certificate -P $TMPDIR $DOWNLOADURL && \
-        tar -C $ROOTDIR -xzf $TMPDIR/go$VAR.$OS-$ARCH.tar.gz && \
-        mv $SYSROOTDIR/go $ROOTDIR/go$VAR && \
-        ln -s $ROOTDIR/go$VAR/bin/go $BINDIR/go$VAR
+        sudo tar -C $ROOTDIR -xzf $TMPDIR/go$VAR.$OS-$ARCH.tar.gz && \
+        sudo mv $SYSROOTDIR/go $ROOTDIR/go$VAR && \
+        sudo ln -s $ROOTDIR/go$VAR/bin/go $BINDIR/go$VAR
     } &
     sleep 2
     BARS='                                                  '
@@ -180,12 +179,12 @@ check() {
                 if [ -d $SYSROOTDIR/go ];then
                     rm -fr $SYSROOTDIR/go
                 fi
-                mv $GOROOT $SYSROOTDIR/go
+                sudo mv $GOROOT $SYSROOTDIR/go
             fi
             
-            mv $SYSROOTDIR/go $ROOTDIR/$SYSUSINGVERSION
+            sudo mv $SYSROOTDIR/go $ROOTDIR/$SYSUSINGVERSION
             export GOROOT=$ROOTDIR/$SYSUSINGVERSION
-            ln -s $ROOTDIR/$SYSUSINGVERSION/bin/go $BINDIR/$SYSUSINGVERSION
+            sudo ln -s $ROOTDIR/$SYSUSINGVERSION/bin/go $BINDIR/$SYSUSINGVERSION
             
             SHCMD=$(bash $USERPATH/.govm/.splitarray.sh $SHELL)
             OLDGOROOT=$(cat $USERPATH/."$SHCMD"rc | grep GOROOT)
@@ -208,13 +207,13 @@ check() {
         do
             if [ $vv != "go" ];then
                 if [ ! -f $BINDIR/$vv ] && [ -f $ROOTDIR/$vv/bin/go ];then
-                    ln -s $ROOTDIR/$vv/bin/go $BINDIR/$vv
+                    sudo ln -s $ROOTDIR/$vv/bin/go $BINDIR/$vv
                     echo "link check $vv successful"
                 fi
                 if [ -f $BINDIR/$vv ] && [ -f $ROOTDIR/$vv/bin/go ] && [ ! -f $BINDIR/go ];then
                     SHCMD=$(bash $USERPATH/.govm/.splitarray.sh $SHELL)
                     export GOROOT=$ROOTDIR/$vv
-                    ln -s $BINDIR/$vv $BINDIR/go
+                    sudo ln -s $BINDIR/$vv $BINDIR/go
                     OLDGOROOT=$(cat $USERPATH/."$SHCMD"rc | grep GOROOT)
                     NEWGOROOT="export GOROOT='$ROOTDIR/$vv'"
                     if [ $OLDGOROOT ];then
