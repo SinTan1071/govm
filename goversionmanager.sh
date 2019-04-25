@@ -22,7 +22,7 @@ case "$OS" in
 esac
 
 VAR=$2
-ROOTDIR="/usr/local"
+ROOTDIR="/usr/local/govm"
 BINDIR="/usr/local/bin"
 USERPATH=~
 TMPDIR=$USERPATH/.govm/.tmp
@@ -150,7 +150,14 @@ installGoEnv() {
     return 0
 }
 
+removeGoEnv() {
+    # TODO
+}
+
 check() {
+    if [ ! -d $ROOTDIR ];then
+        mkdir -p $ROOTDIR
+    fi
     if [ -f $GOROOT/bin/go ];then
         SYSUSINGVERSION=$($GOROOT/bin/go version | awk '{print $3}')
         WHICHGO=$(which go)
@@ -200,7 +207,7 @@ case "$1" in
         installGoEnv || exit 1
         ;;
     *)
-        echo "Usage: $0 {use|list|install}"
+        echo "Usage: {use|list|install}"
         exit 1
         ;;
 esac
