@@ -17,7 +17,7 @@ case "$OS" in
         ;;
     *)
         echo "Sorry, Your OS is not available for this script !"
-        exit 1
+        return 0
         ;;
 esac
 
@@ -209,6 +209,7 @@ check() {
             if [ $vv != "go" ];then
                 if [ ! -f $BINDIR/$vv ] && [ -f $ROOTDIR/$vv/bin/go ];then
                     ln -s $ROOTDIR/$vv/bin/go $BINDIR/$vv
+                    echo "link check $vv successful"
                 fi
                 if [ -f $BINDIR/$vv ] && [ -f $ROOTDIR/$vv/bin/go ] && [ ! -f $BINDIR/go ];then
                     SHCMD=$(bash $USERPATH/.govm/.splitarray.sh $SHELL)
@@ -223,6 +224,7 @@ check() {
                     else
                         echo $NEWGOROOT >> $USERPATH/."$SHCMD"rc
                     fi
+                    echo "using $vv as default"
                 fi
             fi    
         done
@@ -233,16 +235,16 @@ check
 
 case "$1" in
     use)
-        useGoEnv || exit 1
+        useGoEnv
         ;;
     list)
-        listGoEnv || exit 1
+        listGoEnv
         ;;
     install)
-        installGoEnv || exit 1
+        installGoEnv
         ;;
     *)
         echo "Usage: {use|list|install}"
-        exit 1
+        return 0
         ;;
 esac
