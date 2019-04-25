@@ -44,9 +44,13 @@ useGoEnv() {
         ln -s $BINDIR/go$VAR $BINDIR/go
         OLDGOROOT=$(cat $USERPATH/."$SHCMD"rc | grep GOROOT)
         NEWGOROOT="export GOROOT='$ROOTDIR/go$VAR'"
-        sed "s|$OLDGOROOT|$NEWGOROOT|" $USERPATH/."$SHCMD"rc >> $USERPATH/."$SHCMD"rc.tmp
-        cp $USERPATH/."$SHCMD"rc.tmp $USERPATH/."$SHCMD"rc
-        rm $USERPATH/."$SHCMD"rc.tmp
+        if [ $OLDGOROOT ];then
+            sed "s|$OLDGOROOT|$NEWGOROOT|" $USERPATH/."$SHCMD"rc >> $USERPATH/."$SHCMD"rc.tmp
+            cp $USERPATH/."$SHCMD"rc.tmp $USERPATH/."$SHCMD"rc
+            rm $USERPATH/."$SHCMD"rc.tmp
+        else
+            echo $NEWGOROOT >> $USERPATH/."$SHCMD"rc
+        fi
         echo "using go$VAR now"
     else
         echo "no local go$VAR was found, you should install the golang version $VAR first"
@@ -56,7 +60,7 @@ useGoEnv() {
 
 listGoEnv() {
     if [ $GOROOT != $SYSROOTDIR/go ] && [ ! -f $SYSROOTDIR/go/bin/go ];then
-        NOWUSING=$(go version | awk '{print $3}') || echo "no go found in your system"
+        NOWUSING=$(go version | awk '{print $3}')
     fi
     for v in `ls $BINDIR | grep go`
     do
@@ -64,7 +68,7 @@ listGoEnv() {
         do
             if [ $vv != "go" ] && [ $v = $vv ];then
                 if [ $v = $NOWUSING ];then
-                    echo -e "\033[33m$v\033[0m    <--- Using Now"
+                    echo -e "\033[33m$v\033[0m    <--- using now"
                 else
                     echo $v
                 fi
@@ -186,13 +190,43 @@ check() {
             SHCMD=$(bash $USERPATH/.govm/.splitarray.sh $SHELL)
             OLDGOROOT=$(cat $USERPATH/."$SHCMD"rc | grep GOROOT)
             NEWGOROOT="export GOROOT='$ROOTDIR/$SYSUSINGVERSION'"
-            sed "s|$OLDGOROOT|$NEWGOROOT|" $USERPATH/."$SHCMD"rc >> $USERPATH/."$SHCMD"rc.tmp
-            cp $USERPATH/."$SHCMD"rc.tmp $USERPATH/."$SHCMD"rc
-            rm $USERPATH/."$SHCMD"rc.tmp
+            if [ $OLDGOROOT ];then
+                sed "s|$OLDGOROOT|$NEWGOROOT|" $USERPATH/."$SHCMD"rc >> $USERPATH/."$SHCMD"rc.tmp
+                cp $USERPATH/."$SHCMD"rc.tmp $USERPATH/."$SHCMD"rc
+                rm $USERPATH/."$SHCMD"rc.tmp
+            else
+                echo $NEWGOROOT >> $USERPATH/."$SHCMD"rc
+            fi
             
             echo "govm check system golang version successfull"
         fi
     fi
+
+    for v in `ls $BINDIR | grep go`
+    do
+        for vv in `ls $ROOTDIR | grep go`
+        do
+            if [ $vv != "go" ];then
+                if [ ! -f $BINDIR/$vv ] && [ -f $ROOTDIR/$vv/bin/go ];then
+                    ln -s $ROOTDIR/$vv/bin/go $BINDIR/$vv
+                fi
+                if [ -f $BINDIR/$vv ] && [ -f $ROOTDIR/$vv/bin/go ] && [ ! -f $BINDIR/go ];then
+                    SHCMD=$(bash $USERPATH/.govm/.splitarray.sh $SHELL)
+                    export GOROOT=$ROOTDIR/$vv
+                    ln -s $BINDIR/$vv $BINDIR/go
+                    OLDGOROOT=$(cat $USERPATH/."$SHCMD"rc | grep GOROOT)
+                    NEWGOROOT="export GOROOT='$ROOTDIR/$vv'"
+                    if [ $OLDGOROOT ];then
+                        sed "s|$OLDGOROOT|$NEWGOROOT|" $USERPATH/."$SHCMD"rc >> $USERPATH/."$SHCMD"rc.tmp
+                        cp $USERPATH/."$SHCMD"rc.tmp $USERPATH/."$SHCMD"rc
+                        rm $USERPATH/."$SHCMD"rc.tmp
+                    else
+                        echo $NEWGOROOT >> $USERPATH/."$SHCMD"rc
+                    fi
+                fi
+            fi    
+        done
+    done
 }
 
 check
