@@ -38,7 +38,7 @@ useGoEnv() {
     fi
     if [ -f $ROOTDIR/go$VAR/bin/go ] && [ -f $BINDIR/go$VAR ]; then
         if [ -f $BINDIR/go ];then
-            rm $BINDIR/go
+            sudo rm $BINDIR/go
         fi
         export GOROOT=$ROOTDIR/go$VAR
         sudo ln -s $BINDIR/go$VAR $BINDIR/go
@@ -47,7 +47,7 @@ useGoEnv() {
         if [ $OLDGOROOT ];then
             sed "s|$OLDGOROOT|$NEWGOROOT|" $USERPATH/."$SHCMD"rc >> $USERPATH/."$SHCMD"rc.tmp
             cp $USERPATH/."$SHCMD"rc.tmp $USERPATH/."$SHCMD"rc
-            rm $USERPATH/."$SHCMD"rc.tmp
+            sudo rm $USERPATH/."$SHCMD"rc.tmp
         else
             echo $NEWGOROOT >> $USERPATH/."$SHCMD"rc
         fi
@@ -112,19 +112,19 @@ installGoEnv() {
         LOCALLEN=$(ls -l $TMPDIR/go$VAR.$OS-$ARCH.tar.gz | awk '{print $5}')
         if [ ${SERVERLEN:0:$((${#SERVERLEN}-1))} = $LOCALLEN ];then
             sudo tar -C $ROOTDIR -xzf $TMPDIR/go$VAR.$OS-$ARCH.tar.gz && \
-            sudo mv $SYSROOTDIR/go $ROOTDIR/go$VAR && \
+            sudo mv $ROOTDIR/go $ROOTDIR/go$VAR && \
             sudo ln -s $ROOTDIR/go$VAR/bin/go $BINDIR/go$VAR
             echo "go$VAR install successfull"
             return 0
         fi
-        rm $TMPDIR/go$VAR.$OS-$ARCH.tar.gz
+        sudo rm $TMPDIR/go$VAR.$OS-$ARCH.tar.gz
     fi
     echo "installing go$VAR...   "
     # echo "work dir $TMPDIR"
     {
         wget --quiet --no-check-certificate -P $TMPDIR $DOWNLOADURL && \
         sudo tar -C $ROOTDIR -xzf $TMPDIR/go$VAR.$OS-$ARCH.tar.gz && \
-        sudo mv $SYSROOTDIR/go $ROOTDIR/go$VAR && \
+        sudo mv $ROOTDIR/go $ROOTDIR/go$VAR && \
         sudo ln -s $ROOTDIR/go$VAR/bin/go $BINDIR/go$VAR
     } &
     sleep 2
@@ -140,7 +140,7 @@ installGoEnv() {
         fi
         if [ -d $ROOTDIR/go$VAR ] && [ -f $BINDIR/go$VAR ];then
             if [ -f $TMPDIR/go$VAR.$OS-$ARCH.tar.gz ];then
-                rm $TMPDIR/go$VAR.$OS-$ARCH.tar.gz
+                sudo rm $TMPDIR/go$VAR.$OS-$ARCH.tar.gz
             fi
             PROCESS=$(( $PROCESS + 1 ))
             SLEEPTIME=0.05
@@ -150,7 +150,7 @@ installGoEnv() {
         fi
         sleep $SLEEPTIME
     done
-    rm wget-log
+    sudo rm wget-log
     return 0
 }
 
@@ -166,18 +166,18 @@ check() {
         SYSUSINGVERSION=$($GOROOT/bin/go version | awk '{print $3}')
         WHICHGO=$(which go)
         if [ $WHICHGO != $BINDIR/go ];then
-            rm $WHICHGO
+            sudo rm $WHICHGO
         fi 
         if [ $GOROOT != $ROOTDIR/$SYSUSINGVERSION ];then
             if [ -f $BINDIR/go ];then
-                rm $BINDIR/go
+                sudo rm $BINDIR/go
             fi
             if [ -f $BINDIR/$SYSUSINGVERSION ];then
-                rm $BINDIR/$SYSUSINGVERSION
+                sudo rm $BINDIR/$SYSUSINGVERSION
             fi
             if [ $GOROOT != $SYSROOTDIR/go ] || [ $GOROOT != $SYSROOTDIR/go/ ];then
                 if [ -d $SYSROOTDIR/go ];then
-                    rm -fr $SYSROOTDIR/go
+                    sudo rm -fr $SYSROOTDIR/go
                 fi
                 sudo mv $GOROOT $SYSROOTDIR/go
             fi
@@ -192,7 +192,7 @@ check() {
             if [ $OLDGOROOT ];then
                 sed "s|$OLDGOROOT|$NEWGOROOT|" $USERPATH/."$SHCMD"rc >> $USERPATH/."$SHCMD"rc.tmp
                 cp $USERPATH/."$SHCMD"rc.tmp $USERPATH/."$SHCMD"rc
-                rm $USERPATH/."$SHCMD"rc.tmp
+                sudo rm $USERPATH/."$SHCMD"rc.tmp
             else
                 echo $NEWGOROOT >> $USERPATH/."$SHCMD"rc
             fi
@@ -219,7 +219,7 @@ check() {
                     if [ $OLDGOROOT ];then
                         sed "s|$OLDGOROOT|$NEWGOROOT|" $USERPATH/."$SHCMD"rc >> $USERPATH/."$SHCMD"rc.tmp
                         cp $USERPATH/."$SHCMD"rc.tmp $USERPATH/."$SHCMD"rc
-                        rm $USERPATH/."$SHCMD"rc.tmp
+                        sudo rm $USERPATH/."$SHCMD"rc.tmp
                     else
                         echo $NEWGOROOT >> $USERPATH/."$SHCMD"rc
                     fi
