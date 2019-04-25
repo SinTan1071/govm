@@ -23,6 +23,7 @@ esac
 
 VAR=$2
 ROOTDIR="/usr/local/govm"
+SYSROOTDIR="/usr/local"
 BINDIR="/usr/local/bin"
 USERPATH=~
 TMPDIR=$USERPATH/.govm/.tmp
@@ -54,7 +55,7 @@ useGoEnv() {
 }
 
 listGoEnv() {
-    if [ $GOROOT != $ROOTDIR/go ] && [ ! -f $ROOTDIR/go/bin/go ];then
+    if [ $GOROOT != $SYSROOTDIR/go ] && [ ! -f $SYSROOTDIR/go/bin/go ];then
         NOWUSING=$(go version | awk '{print $3}')
     fi
     for v in `ls $BINDIR | grep go`
@@ -82,10 +83,10 @@ installGoEnv() {
         echo "you already have the go$VAR installed"
         return 0
     fi
-    if [ -f $ROOTDIR/go/bin/go ];then
-        SYSUSINGVERSION=$($ROOTDIR/go/bin/go version | awk '{print $3}')
+    if [ -f $SYSROOTDIR/go/bin/go ];then
+        SYSUSINGVERSION=$($SYSROOTDIR/go/bin/go version | awk '{print $3}')
         if [ $SYSUSINGVERSION = go$VAR ];then
-            mv $ROOTDIR/go $ROOTDIR/go$VAR
+            mv $SYSROOTDIR/go $ROOTDIR/go$VAR
             # export GOROOT=$ROOTDIR/go$VAR
             ln -s $ROOTDIR/go$VAR/bin/go $BINDIR/go$VAR
             echo "go$VAR install successfull"
@@ -107,7 +108,7 @@ installGoEnv() {
         LOCALLEN=$(ls -l $TMPDIR/go$VAR.$OS-$ARCH.tar.gz | awk '{print $5}')
         if [ ${SERVERLEN:0:$((${#SERVERLEN}-1))} = $LOCALLEN ];then
             tar -C $ROOTDIR -xzf $TMPDIR/go$VAR.$OS-$ARCH.tar.gz && \
-            mv $ROOTDIR/go $ROOTDIR/go$VAR && \
+            mv $SYSROOTDIR/go $ROOTDIR/go$VAR && \
             ln -s $ROOTDIR/go$VAR/bin/go $BINDIR/go$VAR
             echo "go$VAR install successfull"
             return 0
@@ -120,7 +121,7 @@ installGoEnv() {
     {
         wget --quiet --no-check-certificate -P $TMPDIR $DOWNLOADURL && \
         tar -C $ROOTDIR -xzf $TMPDIR/go$VAR.$OS-$ARCH.tar.gz && \
-        mv $ROOTDIR/go $ROOTDIR/go$VAR && \
+        mv $SYSROOTDIR/go $ROOTDIR/go$VAR && \
         ln -s $ROOTDIR/go$VAR/bin/go $BINDIR/go$VAR
     } &
     sleep 2
@@ -171,14 +172,14 @@ check() {
             if [ -f $BINDIR/$SYSUSINGVERSION ];then
                 rm $BINDIR/$SYSUSINGVERSION
             fi
-            if [ $GOROOT != $ROOTDIR/go ] || [ $GOROOT != $ROOTDIR/go/ ];then
-                if [ -d $ROOTDIR/go ];then
-                    rm -fr $ROOTDIR/go
+            if [ $GOROOT != $SYSROOTDIR/go ] || [ $GOROOT != $SYSROOTDIR/go/ ];then
+                if [ -d $SYSROOTDIR/go ];then
+                    rm -fr $SYSROOTDIR/go
                 fi
-                mv $GOROOT $ROOTDIR/go
+                mv $GOROOT $SYSROOTDIR/go
             fi
             
-            mv $ROOTDIR/go $ROOTDIR/$SYSUSINGVERSION
+            mv $SYSROOTDIR/go $ROOTDIR/$SYSUSINGVERSION
             export GOROOT=$ROOTDIR/$SYSUSINGVERSION
             ln -s $ROOTDIR/$SYSUSINGVERSION/bin/go $BINDIR/$SYSUSINGVERSION
             
