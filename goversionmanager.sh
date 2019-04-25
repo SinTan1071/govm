@@ -56,7 +56,7 @@ useGoEnv() {
 
 listGoEnv() {
     if [ $GOROOT != $SYSROOTDIR/go ] && [ ! -f $SYSROOTDIR/go/bin/go ];then
-        NOWUSING=$(go version | awk '{print $3}')
+        NOWUSING=$(go version | awk '{print $3}') || echo "no go found in your system"
     fi
     for v in `ls $BINDIR | grep go`
     do
