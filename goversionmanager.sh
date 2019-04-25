@@ -118,6 +118,7 @@ installGoEnv() {
             return 0
         fi
         rm $TMPDIR/go$VAR.$OS-$ARCH.tar.gz
+        sudo rm $TMPDIR/go$VAR.$OS-$ARCH.tar.gz
     fi
     echo "installing go$VAR...   "
     # echo "work dir $TMPDIR"
@@ -141,6 +142,7 @@ installGoEnv() {
         if [ -d $ROOTDIR/go$VAR ] && [ -f $BINDIR/go$VAR ];then
             if [ -f $TMPDIR/go$VAR.$OS-$ARCH.tar.gz ];then
                 rm $TMPDIR/go$VAR.$OS-$ARCH.tar.gz
+                sudo rm $TMPDIR/go$VAR.$OS-$ARCH.tar.gz
             fi
             PROCESS=$(( $PROCESS + 1 ))
             SLEEPTIME=0.05
