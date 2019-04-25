@@ -47,7 +47,7 @@ useGoEnv() {
         if [ $OLDGOROOT ];then
             sed "s|$OLDGOROOT|$NEWGOROOT|" $USERPATH/."$SHCMD"rc >> $USERPATH/."$SHCMD"rc.tmp
             cp $USERPATH/."$SHCMD"rc.tmp $USERPATH/."$SHCMD"rc
-            sudo rm $USERPATH/."$SHCMD"rc.tmp
+            rm $USERPATH/."$SHCMD"rc.tmp
         else
             echo $NEWGOROOT >> $USERPATH/."$SHCMD"rc
         fi
@@ -117,7 +117,7 @@ installGoEnv() {
             echo "go$VAR install successfull"
             return 0
         fi
-        sudo rm $TMPDIR/go$VAR.$OS-$ARCH.tar.gz
+        rm $TMPDIR/go$VAR.$OS-$ARCH.tar.gz
     fi
     echo "installing go$VAR...   "
     # echo "work dir $TMPDIR"
@@ -140,7 +140,7 @@ installGoEnv() {
         fi
         if [ -d $ROOTDIR/go$VAR ] && [ -f $BINDIR/go$VAR ];then
             if [ -f $TMPDIR/go$VAR.$OS-$ARCH.tar.gz ];then
-                sudo rm $TMPDIR/go$VAR.$OS-$ARCH.tar.gz
+                rm $TMPDIR/go$VAR.$OS-$ARCH.tar.gz
             fi
             PROCESS=$(( $PROCESS + 1 ))
             SLEEPTIME=0.05
@@ -150,7 +150,7 @@ installGoEnv() {
         fi
         sleep $SLEEPTIME
     done
-    sudo rm wget-log
+    rm wget-log
     return 0
 }
 
@@ -192,7 +192,7 @@ check() {
             if [ $OLDGOROOT ];then
                 sed "s|$OLDGOROOT|$NEWGOROOT|" $USERPATH/."$SHCMD"rc >> $USERPATH/."$SHCMD"rc.tmp
                 cp $USERPATH/."$SHCMD"rc.tmp $USERPATH/."$SHCMD"rc
-                sudo rm $USERPATH/."$SHCMD"rc.tmp
+                rm $USERPATH/."$SHCMD"rc.tmp
             else
                 echo $NEWGOROOT >> $USERPATH/."$SHCMD"rc
             fi
@@ -219,7 +219,7 @@ check() {
                     if [ $OLDGOROOT ];then
                         sed "s|$OLDGOROOT|$NEWGOROOT|" $USERPATH/."$SHCMD"rc >> $USERPATH/."$SHCMD"rc.tmp
                         cp $USERPATH/."$SHCMD"rc.tmp $USERPATH/."$SHCMD"rc
-                        sudo rm $USERPATH/."$SHCMD"rc.tmp
+                        rm $USERPATH/."$SHCMD"rc.tmp
                     else
                         echo $NEWGOROOT >> $USERPATH/."$SHCMD"rc
                     fi
