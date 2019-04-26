@@ -156,9 +156,9 @@ installGoEnv() {
     return 0
 }
 
-removeGoEnv() {
-    # TODO
-}
+# removeGoEnv() {
+#     # TODO
+# }
 
 check() {
     if [ ! -d $ROOTDIR ];then
