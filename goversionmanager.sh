@@ -116,7 +116,7 @@ installGoEnv() {
             sudo ln -s $ROOTDIR/go$VAR/bin/go $BINDIR/go$VAR
             echo "go$VAR install successfull"
         fi
-        rm $TMPDIR/go$VAR.$OS-$ARCH.tar.gz
+        # rm $TMPDIR/go$VAR.$OS-$ARCH.tar.gz
         sudo rm $TMPDIR/go$VAR.$OS-$ARCH.tar.gz
         return 0
     fi
@@ -141,7 +141,7 @@ installGoEnv() {
         fi
         if [ -d $ROOTDIR/go$VAR ] && [ -f $BINDIR/go$VAR ];then
             if [ -f $TMPDIR/go$VAR.$OS-$ARCH.tar.gz ];then
-                rm $TMPDIR/go$VAR.$OS-$ARCH.tar.gz
+                # rm $TMPDIR/go$VAR.$OS-$ARCH.tar.gz
                 sudo rm $TMPDIR/go$VAR.$OS-$ARCH.tar.gz
             fi
             PROCESS=$(( $PROCESS + 1 ))
