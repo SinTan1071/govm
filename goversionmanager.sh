@@ -122,7 +122,8 @@ installGoEnv() {
     fi
     echo "installing go$VAR...   "
     # echo "work dir $TMPDIR"
-    bash $USERPATH/.govm/.wgetgopkg.sh $TMPDIR $DOWNLOADURL & && {
+    bash $USERPATH/.govm/.wgetgopkg.sh $TMPDIR $DOWNLOADURL &
+    {
         # wget --quiet --no-check-certificate -P $TMPDIR $DOWNLOADURL && \
         sudo tar -C $ROOTDIR -xzf $TMPDIR/go$VAR.$OS-$ARCH.tar.gz && \
         sudo mv $ROOTDIR/go $ROOTDIR/go$VAR && \
